@@ -54,25 +54,11 @@ class MainActivity : ComponentActivity() {
             var isDarkTheme by remember { mutableStateOf(true) }
 
             MFTI_1Theme(darkTheme =  isDarkTheme) {
-                CompositionLocalProvider(
-                    LocalVIPClass provides VIPClass("VIP man")
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
                 ) {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
-                    ) {
-                        Column {
-                            Greeting("Android")
-                            CompositionLocalProvider(
-                                LocalVIPClass provides VIPClass("BLM Guard")
-                            ) {
-                                Greeting("Android", modifier= Modifier.clickable
-                                { isDarkTheme = !isDarkTheme
-                                })
-                            }
-                        }
-                    }
-
+                    SignIn()
                 }
                 // A surface container using the 'background' color from the theme
             }
