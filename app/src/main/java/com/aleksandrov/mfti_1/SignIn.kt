@@ -30,12 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aleksandrov.mfti_1.R
 
+import com.aleksandrov.mfti_1.SignInView
+
 @Composable
 fun SignIn() {
+    val signInViewModel = SignInView()
 
     LazyColumn(content = {
         item { Title() }
-        item { PersonalInfo() }
+        item { PersonalInfo(signInViewModel) }
         item { ButtonEmail() }
     },
         modifier = Modifier.fillMaxSize(),
@@ -94,10 +97,12 @@ fun Title() {
 }
 
 @Composable
-fun PersonalInfo(){
+fun PersonalInfo(signInViewModel: SignInView){
     var text_uname by remember { mutableStateOf(TextFieldValue("")) }
     var text_password by remember { mutableStateOf(TextFieldValue("")) }
     var text_email by remember { mutableStateOf(TextFieldValue("")) }
+
+    val signInViewState = signInViewModel.viewState.collectAsState()
 
     var passwordVisible by remember { mutableStateOf(false) }
     Column() {
