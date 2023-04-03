@@ -28,18 +28,22 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aleksandrov.mfti_1.R
+import com.aleksandrov.mfti_1.SignInEvent
 
 import com.aleksandrov.mfti_1.SignInView
+import com.aleksandrov.mfti_1.SignInViewState
 
 @Composable
 fun SignIn() {
-    val signInViewModel = SignInView()
+    val signInView:SignInView = viewModel()
+    val signInViewState = signInView.viewState.collectAsState()
 
     LazyColumn(content = {
         item { Title() }
-        item { PersonalInfo(signInViewModel) }
-        item { ButtonEmail() }
+        item { PersonalInfo(signInView, signInViewState) }
+        item { ButtonEmail(signInView, signInViewState) }
     },
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -97,16 +101,10 @@ fun Title() {
 }
 
 @Composable
-fun PersonalInfo(signInViewModel: SignInView){
-    var text_uname by remember { mutableStateOf(TextFieldValue("")) }
-    var text_password by remember { mutableStateOf(TextFieldValue("")) }
-    var text_email by remember { mutableStateOf(TextFieldValue("")) }
+fun PersonalInfo(signInView:SignInView, signInViewState:  State<SignInViewState>){
 
-    val signInViewState = signInViewModel.viewState.collectAsState()
-
-    var passwordVisible by remember { mutableStateOf(false) }
     Column() {
-        TextField(value = text_uname,
+        TextField(value = signInViewState.value.textUname,
             modifier = Modifier
                 .padding(8.dp)
                 .width(315.dp)
@@ -119,9 +117,7 @@ fun PersonalInfo(signInViewModel: SignInView){
                 Icon(imageVector = Icons.Default.Person, contentDescription = "personIcon",
                     tint = Color.Green)
             },
-            onValueChange = { input ->
-                text_uname = input
-            },
+            onValueChange = {signInView.obtainEvent(SignInEvent.changeUname(it))},
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,
@@ -131,7 +127,7 @@ fun PersonalInfo(signInViewModel: SignInView){
             shape = RoundedCornerShape(20.dp),
             placeholder = { Text(text = "Username") }
         )
-        TextField(value = text_email,
+        TextField(value = signInViewState.value.textEmail,
             modifier = Modifier
                 .padding(8.dp)
                 .width(315.dp)
@@ -143,9 +139,7 @@ fun PersonalInfo(signInViewModel: SignInView){
                 Icon(imageVector = Icons.Default.Email, contentDescription = "emailIcon",
                     tint = Color.Green)
             },
-            onValueChange = { input ->
-                text_email = input
-            },
+            onValueChange = {signInView.obtainEvent(SignInEvent.changeEmail(it))},
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
@@ -155,7 +149,7 @@ fun PersonalInfo(signInViewModel: SignInView){
             ),
             placeholder = { Text(text = "Email") }
         )
-        TextField(value = text_password,
+        TextField(value = signInViewState.value.textPassword,
             modifier = Modifier
                 .padding(8.dp)
                 .width(315.dp)
@@ -169,7 +163,7 @@ fun PersonalInfo(signInViewModel: SignInView){
             },
             trailingIcon = {
                 IconButton(onClick = {
-                    passwordVisible = !passwordVisible
+                    signInView.obtainEvent(SignInEvent.passVisible)
                 })
                 {
                     Icon(
@@ -179,10 +173,8 @@ fun PersonalInfo(signInViewModel: SignInView){
                     )
                 }
             },
-            onValueChange = { input ->
-                text_password = input
-            },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            onValueChange = { signInView.obtainEvent(SignInEvent.changePassword(it)) },
+            visualTransformation = if (signInViewState.value.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             shape = RoundedCornerShape(20.dp),
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.White,
@@ -198,9 +190,8 @@ fun PersonalInfo(signInViewModel: SignInView){
 }
 
 @Composable
-fun ButtonEmail() {
-    var keepSignedIn by remember { mutableStateOf(Color.LightGray) }
-    var emailMe by remember { mutableStateOf(Color.LightGray) }
+fun ButtonEmail(signInView:SignInView, signInViewState:  State<SignInViewState>) {
+
     Column(
         modifier = Modifier
             .padding(top = 8.dp),
@@ -212,17 +203,13 @@ fun ButtonEmail() {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Top
         ) {
-            IconButton(onClick = { if (keepSignedIn == Color.Green) {
-                keepSignedIn = Color.LightGray
-            } else {
-                keepSignedIn = Color.Green
-            }},
+            IconButton(onClick = {signInView.obtainEvent(SignInEvent.changeSignedInColor)},
             ) {
                 Icon(
                     modifier= Modifier
                         .size(18.dp, 18.dp)
                         .clip(CircleShape)
-                        .background(keepSignedIn),
+                        .background(signInViewState.value.keepSignedIn),
                     imageVector = Icons.Default.Done,
                     tint = Color.White,
                     contentDescription = ""
@@ -239,16 +226,12 @@ fun ButtonEmail() {
             .width(345.dp),
             horizontalArrangement = Arrangement.Start
         ) {
-            IconButton(onClick = { if (emailMe == Color.Green) {
-                emailMe = Color.LightGray
-            } else {
-                emailMe = Color.Green
-            }}) {
+            IconButton(onClick = {signInView.obtainEvent(SignInEvent.changeEmailColor)}) {
                 Icon(
                     modifier= Modifier
                         .size(18.dp, 18.dp)
                         .clip(CircleShape)
-                        .background(emailMe),
+                        .background(signInViewState.value.emailColor),
                     imageVector = Icons.Default.Done,
                     tint = Color.White,
                     contentDescription = ""
