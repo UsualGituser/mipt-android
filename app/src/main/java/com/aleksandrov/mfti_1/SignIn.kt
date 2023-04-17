@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aleksandrov.mfti_1.Catalog.FoodCatalog
 import com.aleksandrov.mfti_1.R
 import com.aleksandrov.mfti_1.SignInEvent
 

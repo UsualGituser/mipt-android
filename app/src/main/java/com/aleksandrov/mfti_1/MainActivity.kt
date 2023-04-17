@@ -1,6 +1,7 @@
 package com.aleksandrov.mfti_1
 
 import SignIn
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,9 +10,17 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.aleksandrov.mfti_1.Catalog.FoodCatalog
 import com.aleksandrov.mfti_1.ui.theme.MFTI_1Theme
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class MFTIApplication: Application()
 
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    SignIn()
+                    FoodCatalog()
                 }
                 // A surface container using the 'background' color from the theme
             }
@@ -57,5 +66,13 @@ class MainActivity : ComponentActivity() {
 fun SignInTest() {
     MFTI_1Theme {
         SignIn()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CatalogTest() {
+    MFTI_1Theme {
+        FoodCatalog()
     }
 }
