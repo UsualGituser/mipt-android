@@ -19,7 +19,6 @@ import dagger.hilt.android.HiltAndroidApp
 class MFTIApplication: Application()
 
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +72,11 @@ fun SignInTest() {
 @Composable
 fun CatalogTest() {
     MFTI_1Theme {
-        FoodCatalog()
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
+            FoodCatalog()
+        }
     }
 }

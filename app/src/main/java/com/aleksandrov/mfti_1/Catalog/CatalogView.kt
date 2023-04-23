@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aleksandrov.mfti_1.SignInViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
 import javax.inject.Inject
 
 data class Restaurant(
@@ -32,15 +34,15 @@ class CatalogViewModel @Inject constructor(private val restaurantRepository: Res
     val viewState: LiveData<CatalogViewState> = _viewState
 
     private fun fetchRestaurants() {
-        viewModelScope.launch {
-            val response = restaurantRepository.fetchCatalog()
-
-            _viewState.postValue(
-                _viewState.value?.copy(
-                    nearestRestaurant = response.nearest.map { it.mapToRestaurant() },
-                    popularRestaurant = response.popular.map { it.mapToRestaurant() }
+        viewModelScope.launch(Dispatchers.IO) {
+            restaurantRepository.fetchCatalog().collect { response ->
+                _viewState.postValue(
+                    _viewState.value?.copy(
+                        nearestRestaurant = response.nearest.map { it.mapToRestaurant() },
+                        popularRestaurant = response.popular.map { it.mapToRestaurant() }
+                    )
                 )
-            )
+            }
         }
     }
 
