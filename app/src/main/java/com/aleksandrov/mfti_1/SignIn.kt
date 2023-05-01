@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.aleksandrov.mfti_1.Catalog.FoodCatalog
 import com.aleksandrov.mfti_1.R
 import com.aleksandrov.mfti_1.SignInEvent
@@ -37,14 +38,13 @@ import com.aleksandrov.mfti_1.SignInView
 import com.aleksandrov.mfti_1.SignInViewState
 
 @Composable
-fun SignIn() {
-    val signInView:SignInView = viewModel()
+fun SignIn(navController: NavController, signInView:SignInView = viewModel()) {
     val signInViewState = signInView.viewState.collectAsState()
 
     LazyColumn(content = {
         item { Title() }
         item { PersonalInfo(signInView, signInViewState) }
-        item { ButtonEmail(signInView, signInViewState) }
+        item { ButtonEmail(navController, signInView, signInViewState) }
     },
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -191,7 +191,7 @@ fun PersonalInfo(signInView:SignInView, signInViewState:  State<SignInViewState>
 }
 
 @Composable
-fun ButtonEmail(signInView:SignInView, signInViewState:  State<SignInViewState>) {
+fun ButtonEmail(navController: NavController, signInView:SignInView, signInViewState:  State<SignInViewState>) {
 
     Column(
         modifier = Modifier
@@ -245,7 +245,15 @@ fun ButtonEmail(signInView:SignInView, signInViewState:  State<SignInViewState>)
         }
     }
 
-    Button(onClick = {},
+    Button(onClick = {
+            if (signInViewState.value.textEmail.isNotEmpty() &&
+                signInViewState.value.textPassword.isNotEmpty() &&
+                    signInViewState.value.textUname.isNotEmpty()) {
+                navController.navigate("RestaurantCatalog")
+            } else {
+
+            }
+        },
         shape = RoundedCornerShape(20.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
         modifier = Modifier

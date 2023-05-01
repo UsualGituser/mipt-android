@@ -1,6 +1,7 @@
 package com.aleksandrov.mfti_1.Catalog
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.aleksandrov.mfti_1.R
 
@@ -21,20 +23,20 @@ import com.aleksandrov.mfti_1.R
 
 
 @Composable
-fun FoodCatalog(catalogViewModel: CatalogViewModel = viewModel()) {
+fun FoodCatalog(navController: NavController, catalogViewModel: CatalogViewModel = viewModel()) {
     val state by catalogViewModel.viewState.observeAsState()
     val catalogViewState = state ?: return
 
     LazyColumn(content = {
         catalogViewState.nearestRestaurant.forEach {
             item{
-                RestaurantCard(icon = it.logo, name = it.name, deliveryTime = it.deliveryTime)
+                RestaurantCard(navController = navController, icon = it.logo, name = it.name, deliveryTime = it.deliveryTime)
             }
         }
 
         catalogViewState.popularRestaurant.forEach {
             item{
-                RestaurantCard(icon = it.logo, name = it.name, deliveryTime = it.deliveryTime)
+                RestaurantCard(navController = navController, icon = it.logo, name = it.name, deliveryTime = it.deliveryTime)
             }
         }
     },
@@ -44,13 +46,19 @@ fun FoodCatalog(catalogViewModel: CatalogViewModel = viewModel()) {
 }
 
 @Composable
-fun RestaurantCard(icon: String, name: String, deliveryTime: String) {
+fun RestaurantCard(navController: NavController, icon: String, name: String, deliveryTime: String) {
     Card(modifier=Modifier.fillMaxWidth()) {
         Row() {
             Image(
                 painter = rememberAsyncImagePainter(icon),
                 contentDescription = name,
-                modifier = Modifier.size(128.dp)
+                modifier = Modifier.size(128.dp).clickable(
+                    enabled = true,
+                    onClickLabel = "Details",
+                    onClick = {
+                        navController.navigate("detail/${name + " " + deliveryTime}")
+                    }
+                )
             )
             Text(modifier = Modifier.padding(horizontal = 5.dp), text = name)
             Text(modifier = Modifier.padding(horizontal = 5.dp), text = deliveryTime)

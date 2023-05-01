@@ -10,7 +10,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.aleksandrov.mfti_1.Catalog.CatalogViewModel
 import com.aleksandrov.mfti_1.Catalog.FoodCatalog
+import com.aleksandrov.mfti_1.Catalog.detailCatalog.DetailCatalog
 import com.aleksandrov.mfti_1.ui.theme.MFTI_1Theme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
@@ -24,14 +30,30 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var isDarkTheme by remember { mutableStateOf(true) }
+            var isDarkTheme by remember { mutableStateOf(false) }
+
+            val navController = rememberNavController()
 
             MFTI_1Theme(darkTheme =  isDarkTheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    FoodCatalog()
+                    NavHost(navController = navController, startDestination = "LoginScreen") {
+                        composable("LoginScreen") {
+                            val signInViewModel = hiltViewModel<SignInView>()
+                            SignIn(navController = navController, signInView = signInViewModel)
+                        }
+
+                        composable("RestaurantCatalog") {
+                            val catalogViewModel = hiltViewModel<CatalogViewModel>()
+                            FoodCatalog(navController = navController, catalogViewModel = catalogViewModel)
+                        }
+
+                        composable("detail/{name}") {backStackEntry ->
+                            DetailCatalog(name = backStackEntry.arguments?.getString("name").orEmpty())
+                        }
+                    }
                 }
                 // A surface container using the 'background' color from the theme
             }
@@ -60,7 +82,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun SignInTest() {
     MFTI_1Theme {
@@ -79,4 +101,4 @@ fun CatalogTest() {
             FoodCatalog()
         }
     }
-}
+}*/

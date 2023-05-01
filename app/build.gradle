@@ -70,6 +70,7 @@ dependencies {
     }
     def ktorVersion =  "2.2.3"
     def roomVersion = "2.5.0"
+    def navVersion = "2.5.3"
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
@@ -98,6 +99,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:2.6.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1"
+
+    implementation "com.google.android.gms:play-services-maps:18.1.0"
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    implementation "androidx.navigation:navigation-compose:$navVersion"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     implementation 'androidx.compose.material:material:1.2.0'
     testImplementation 'junit:junit:4.13.2'
